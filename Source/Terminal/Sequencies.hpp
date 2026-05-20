@@ -9,6 +9,10 @@
 
 ACMTSQSpaceStart
 
-inline constexpr auto CSIStart = ACMU::StringLiteral{ "\x1b[" };
+inline constexpr auto Esc = ACMU::SL{ "\x1b" };
+inline constexpr auto CSIStart = ACMU::SL{ "\x1b[" };
+
+inline constexpr auto CursorHide = ACMU::SL{ "\x1b[?25l" };
+inline constexpr auto CursorShow = ACMU::SL{ "\x1b[?25h" };
 
 ACMTSQSpaceEnd

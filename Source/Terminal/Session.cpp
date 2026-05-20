@@ -26,13 +26,13 @@ TerminalSession::TerminalSession() noexcept
     SetConsoleMode(m_Input, inMode);
 
     Send(SQ::CSIStart + SL{ "?1049h"});
-    Send(SQ::CSIStart + SL{ "?25l" });
+    Send(SQ::CursorHide);
     Send(SQ::CSIStart + SL{ "2J" } + SQ::CSIStart + SL{ "H" });
 }
 
 TerminalSession::~TerminalSession() noexcept
 {
-    Send(SQ::CSIStart + SL{ "?25h" });
+    Send(SQ::CursorShow);
     Send(SQ::CSIStart + SL{ "?1049l" });
 
     SetConsoleMode(m_Input, m_OldInputMode);
