@@ -18,9 +18,9 @@ public:
 public:
     StringLiteral() = delete;
 
-    consteval StringLiteral(const char (&string)[_Size]) noexcept
+    consteval StringLiteral(const char (&rawString)[_Size]) noexcept
     {
-        std::copy_n(string, _Size, m_Data.begin());
+        std::copy_n(rawString, _Size, m_Data.begin());
     }
 
     consteval StringLiteral(const Data& string) noexcept
@@ -44,10 +44,13 @@ private:
     Data m_Data{};
 };
 
+template <std::size_t _Size>
+using SL = StringLiteral<_Size>;
+
 template <std::size_t _LeftSz, std::size_t _RightSz>
-consteval auto Concatenate(const char (&left)[_LeftSz],
-    const char (&right)[_RightSz]) noexcept -> 
-    StringLiteral<_LeftSz + _RightSz - 1>
+consteval auto Concatenate(const StringLiteral<_LeftSz>& left,
+    const StringLiteral<_RightSz>& right) noexcept
+    -> StringLiteral<_LeftSz + _RightSz - 1>
 {
     auto result = std::array<char, _LeftSz + _RightSz - 1>{};
 
@@ -61,7 +64,15 @@ consteval auto Concatenate(const char (&left)[_LeftSz],
         result[_LeftSz - 1 + i] = right[i];
     }
 
-    return { result };
+    return result;
+}
+
+template <std::size_t _LeftSz, std::size_t _RightSz>
+consteval auto operator + (const StringLiteral<_LeftSz>& left,
+    const StringLiteral<_RightSz>& right) noexcept
+    -> decltype(Concatenate(left, right))
+{
+    return Concatenate(left, right);
 }
 
 ACMUSpaceEnd
