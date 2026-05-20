@@ -3,7 +3,11 @@
 #include <cstring>
 #include <minwindef.h>
 
+#include "Sequencies.hpp"
+
 ACMTSpaceStart
+
+using namespace ACMU;
 
 TerminalSession::TerminalSession() noexcept
      : m_Input{ GetStdHandle(STD_INPUT_HANDLE) },
@@ -21,15 +25,15 @@ TerminalSession::TerminalSession() noexcept
 
     SetConsoleMode(m_Input, inMode);
 
-    Send("\x1b[?1049h");
-    Send("\x1b[?25l");
-    Send("\x1b[2J\x1b[H");
+    Send(SQ::CSIStart + SL{ "?1049h"});
+    Send(SQ::CSIStart + SL{ "?25l" });
+    Send(SQ::CSIStart + SL{ "2J" } + SQ::CSIStart + SL{ "H" });
 }
 
 TerminalSession::~TerminalSession() noexcept
 {
-    Send("\x1b[?25h");
-    Send("\x1b[?1049l");
+    Send(SQ::CSIStart + SL{ "?25h" });
+    Send(SQ::CSIStart + SL{ "?1049l" });
 
     SetConsoleMode(m_Input, m_OldInputMode);
     SetConsoleMode(m_Output, m_OldOutputMode);
